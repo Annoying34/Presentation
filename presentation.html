@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Annoying 34 - Automatisierte Anfrage mittels BDSG §34</title>
+
+		<meta name="description" content="Annoying 34">
+		<meta name="author" content="Annoying 34">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Annoying 34</h1>
+					<h3>Automatisierte Anfrage mittels BDSG §34</h3>
+				</section>
+
+				<section>
+					<h2>Gliederung</h2>
+					<ul>
+						<li>Server und Datenbank</li>
+						<li>Kommunikation mit E-Mail-Providern</li>
+						<li>Crawler</li>
+						<li>Übersicht Workflow</li>
+						<li>Frontend oder "Juhu kein Java"</li>
+						<li>Live Demo</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Server und Datenbank</h2>
+						<p>Bla</p>
+						<p>Use the <em>Space</em> key to navigate through all slides.</p>
+						<br>
+						<a href="#" class="navigate-down">
+							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
+						</a>
+					</section>
+					<section>
+						<h2>Server und Datenbank 1</h2>
+						<p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
+					</section>
+					<section>
+						<h2>Server und Datenbank 2</h2>
+						<p>That's it, time to go back up.</p>
+						<br>
+						<a href="#/2">
+							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="transform: rotate(180deg); -webkit-transform: rotate(180deg);">
+						</a>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+						<li><p>
+							Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
+						</p></li>
+						</ul>
+					</section>
+					<section>
+						<h2>Abfrage der Kommunikationspartner</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Abfrage über IMAP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class ImapQuery extends MailAccessor {
+
+	public ImapQuery(String address, String password,
+		String imapServer) {
+		...
+	}
+	
+	public Set&lt;String&gt; getSenderDomains() {
+		...
+	}
+
+	public Set&lt;MailAddress&gt; getSenderMailAddresses() {
+		...
+	}
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+						<li><p>
+							Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
+						</p></li>
+						<li class = "fragment"><p>
+							Ziel 2: Einfache Datenanfrage, auch bei vielen Empfängern
+						</p></li>
+						</ul>
+					</section>
+					<section>
+						<h2>Versand der Anfragen</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Versand über SMTP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class SmtpSender extends MailAccessor {
+
+	public SmtpSender(String address, String password,
+		String smtpServer) {
+		...
+	}
+	
+	public void sendMail(List&lt;String&gt; recipients,
+		String subject, String content) {
+		...
+	}
+}
+						</code></pre>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Crawler</h2>
+						<p>
+							Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
+						</p>
+					</section>
+					<section>
+						<h2>Crawler 2</h2>
+						<p>
+							Huhu
+						</p>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Frontend oder "Juhu kein Java"</h2>
+						<p>
+							Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
+						</p>
+					</section>
+					<section>
+						<h2>Frontend oder "Juhu kein Java" 2</h2>
+						<p>
+							Huhu
+						</p>
+					</section>
+				</section>
+				
+				<section>
+					<h1>LIVE DEMO</h1>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

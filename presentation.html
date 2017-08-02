@@ -59,25 +59,64 @@
 
 				<section>
 					<section>
-						<h2>Server und Datenbank</h2>
-						<p>Bla</p>
-						<p>Use the <em>Space</em> key to navigate through all slides.</p>
-						<br>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
+						<h2>Architektur</h2>
+						<ul>
+							<li class="fragment">Client-Server Struktur</li>
+							<li class="fragment">Fronend und Backend getrennt</li>
+							<ul>
+								<li class="fragment">Einbindung in Clients über RESTful Service möglich</li>
+								<li class="fragment">Webseite, E-Mail-Clients, etc</li>
+							</ul>
+						</ul>
 					</section>
 					<section>
-						<h2>Server und Datenbank 1</h2>
-						<p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
+						<h2>Technologien</h2>
+						<img src="Spring-Boot.png">
+						<p class="fragment">Java mit Spring Boot</p>
+						<p class="fragment">Hibernate, Docker, Git, Gradle</p>
 					</section>
 					<section>
-						<h2>Server und Datenbank 2</h2>
-						<p>That's it, time to go back up.</p>
-						<br>
-						<a href="#/2">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="transform: rotate(180deg); -webkit-transform: rotate(180deg);">
-						</a>
+						<h2>Restschnittstelle</h2>
+						<pre><code data-trim data-noescape>
+@PutMapping(value = "/companies", consumes = "application/json")
+public ResponseEntity<String> put(@RequestBody Company company) {
+    if (company == null) {
+        return new ResponseEntity<>("no company transmitted", HttpStatus.BAD_REQUEST);
+    } else {
+        companyService.put(company);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+}
+	</code></pre>
+	<p>"PUT /companies" speichert neue Firmen in die Datenbank</p>
+					</section>
+
+					<section>
+						<h2>Spring JPA (Datenbank)</h2>
+						<pre><code data-trim data-noescape>
+@Transactional
+public interface CompanyRepository extends CrudRepository<Company, Long> {
+    List<Company> findAll();
+    List<Company> findByIdIn(List<Long> ids);
+}
+	</code></pre>
+
+	<pre><code data-trim data-noescape>
+@Entity
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
+    ...
+    @ManyToMany(targetEntity = User.class, cascade = {CascadeType.ALL})
+    private List<User> users;
+    ...
+</code></pre>
 					</section>
 				</section>
 
@@ -105,7 +144,7 @@ public class ImapQuery extends MailAccessor {
 		String imapServer) {
 		...
 	}
-	
+
 	public Set&lt;String&gt; getSenderDomains() {
 		...
 	}
@@ -142,7 +181,7 @@ public class SmtpSender extends MailAccessor {
 		String smtpServer) {
 		...
 	}
-	
+
 	public void sendMail(List&lt;String&gt; recipients,
 		String subject, String content) {
 		...
@@ -151,7 +190,7 @@ public class SmtpSender extends MailAccessor {
 						</code></pre>
 					</section>
 				</section>
-				
+
 				<section>
 					<section>
 						<h2>Crawler</h2>
@@ -166,7 +205,7 @@ public class SmtpSender extends MailAccessor {
 						</p>
 					</section>
 				</section>
-				
+
 				<section>
 					<section>
 						<h2>Frontend oder "Juhu kein Java"</h2>
@@ -181,7 +220,7 @@ public class SmtpSender extends MailAccessor {
 						</p>
 					</section>
 				</section>
-				
+
 				<section>
 					<h1>LIVE DEMO</h1>
 				</section>

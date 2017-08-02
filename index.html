@@ -35,150 +35,15 @@
 				<section>
 					<h2>Gliederung</h2>
 					<ul>
-						<li>Server und Datenbank</li>
-						<li>Kommunikation mit E-Mail-Providern</li>
 						<li>Crawler</li>
-						<li>Übersicht Workflow</li>
-						<li>Frontend oder "Juhu kein Java"</li>
+						<li>Kommunikation mit E-Mail-Providern</li>
+						<li>Architektur</li>
+						<li>Workflow</li>
+						<li>Frontend</li>
 						<li>Live Demo</li>
 					</ul>
 				</section>
-				<section>
-					<section>
-						<h2>Architektur</h2>
-						<ul>
-							<li class="fragment">Client-Server Struktur</li>
-							<li class="fragment">Frontend und Backend getrennt</li>
-							<ul>
-								<li class="fragment">Einbindung in Clients über RESTful Service möglich</li>
-								<li class="fragment">Webseite, E-Mail-Clients, etc</li>
-							</ul>
-						</ul>
-					</section>
-					<section>
-						<h2>Technologien</h2>
-						<img src="Spring-Boot.png">
-						<p class="fragment">Java mit Spring Boot</p>
-						<p class="fragment">Hibernate, Docker, Git, Gradle</p>
-					</section>
-					<section>
-						<h2>Restschnittstelle</h2>
-						<pre><code data-trim data-noescape>
-@PutMapping(value = "/companies", consumes = "application/json")
-public ResponseEntity<String> put(@RequestBody Company company) {
-    if (company == null) {
-        return new ResponseEntity<>("no company transmitted", HttpStatus.BAD_REQUEST);
-    } else {
-        companyService.put(company);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-}
-	</code></pre>
-						<p>"PUT /companies" speichert neue Firmen in die Datenbank</p>
-					</section>
-					<section>
-						<h2>Spring JPA (Datenbank)</h2>
-						<pre><code data-trim data-noescape>
-@Transactional
-public interface CompanyRepository extends CrudRepository<Company, Long> {
-    List<Company> findAll();
-    List<Company> findByIdIn(List<Long> ids);
-}
-	</code></pre>
-						<pre><code data-trim data-noescape>
-@Entity
-@Table(name = "company")
-public class Company {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-    @Column(nullable = false)
-    private String name;
-    ...
-    @ManyToMany(targetEntity = User.class, cascade = {CascadeType.ALL})
-    private List<User> users;
-    ...
-</code></pre>
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
-						<ul>
-							<li>
-								<p>
-									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
-								</p>
-							</li>
-						</ul>
-					</section>
-					<section>
-						<h2>Abfrage der Kommunikationspartner</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
-					</section>
-					<section>
-						<h2>Abfrage über IMAP</h2>
-						<pre><code class="java vs" data-trim contenteditable>
-public class ImapQuery extends MailAccessor {
-
-	public ImapQuery(String address, String password,
-		String imapServer) {
-		...
-	}
-
-	public Set&lt;String&gt; getSenderDomains() {
-		...
-	}
-
-	public Set&lt;MailAddress&gt; getSenderMailAddresses() {
-		...
-	}
-}
-						</code></pre>
-					</section>
-					<section>
-						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
-						<ul>
-							<li>
-								<p>
-									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
-								</p>
-							</li>
-							<li class = "fragment">
-								<p>
-									Ziel 2: Einfache Datenanfrage, auch bei vielen Empfängern
-								</p>
-							</li>
-						</ul>
-					</section>
-					<section>
-						<h2>Versand der Anfragen</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
-					</section>
-					<section>
-						<h2>Versand über SMTP</h2>
-						<pre><code class="java vs" data-trim contenteditable>
-public class SmtpSender extends MailAccessor {
-
-	public SmtpSender(String address, String password,
-		String smtpServer) {
-		...
-	}
-
-	public void sendMail(List&lt;String&gt; recipients,
-		String subject, String content) {
-		...
-	}
-}
-						</code></pre>
-					</section>
-				</section>
+				
 				<section>
 					<section>
 						<h1>Crawler</h1>
@@ -261,6 +126,145 @@ if (connection.response().statusCode() >= 200 && connection.response().statusCod
 						</p>
 					</section>
 				</section>
+				
+				<section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+							<li>
+								<p>
+									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
+								</p>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Abfrage der Kommunikationspartner</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Abfrage über IMAP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class ImapQuery extends MailAccessor {
+
+	public ImapQuery(String address, String password,
+		String imapServer) {
+		...
+	}
+
+	public Set&lt;String&gt; getSenderDomains() {
+		...
+	}
+
+	public Set&lt;MailAddress&gt; getSenderMailAddresses() {
+		...
+	}
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+							<li>
+								<p>
+									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
+								</p>
+							</li>
+							<li class = "fragment">
+								<p>
+									Ziel 2: Einfache Datenanfrage, auch bei vielen Empfängern
+								</p>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Versand der Anfragen</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Versand über SMTP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class SmtpSender extends MailAccessor {
+
+	public SmtpSender(String address, String password,
+		String smtpServer) {
+		...
+	}
+
+	public void sendMail(List&lt;String&gt; recipients,
+		String subject, String content) {
+		...
+	}
+}
+						</code></pre>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Architektur</h2>
+						<ul>
+							<li class="fragment">Client-Server Struktur</li>
+							<li class="fragment">Frontend und Backend getrennt</li>
+							<ul>
+								<li class="fragment">Einbindung in Clients über RESTful Service möglich</li>
+								<li class="fragment">Webseite, E-Mail-Clients, etc</li>
+							</ul>
+						</ul>
+					</section>
+					<section>
+						<h2>Technologien</h2>
+						<img src="Spring-Boot.png">
+						<p class="fragment">Java mit Spring Boot</p>
+						<p class="fragment">Hibernate, Docker, Git, Gradle</p>
+					</section>
+					<section>
+						<h2>Restschnittstelle</h2>
+						<pre><code data-trim data-noescape>
+@PutMapping(value = "/companies", consumes = "application/json")
+public ResponseEntity<String> put(@RequestBody Company company) {
+    if (company == null) {
+        return new ResponseEntity<>("no company transmitted", HttpStatus.BAD_REQUEST);
+    } else {
+        companyService.put(company);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+}
+	</code></pre>
+						<p>"PUT /companies" speichert neue Firmen in die Datenbank</p>
+					</section>
+					<section>
+						<h2>Spring JPA (Datenbank)</h2>
+						<pre><code data-trim data-noescape>
+@Transactional
+public interface CompanyRepository extends CrudRepository<Company, Long> {
+    List<Company> findAll();
+    List<Company> findByIdIn(List<Long> ids);
+}
+	</code></pre>
+						<pre><code data-trim data-noescape>
+@Entity
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
+    ...
+    @ManyToMany(targetEntity = User.class, cascade = {CascadeType.ALL})
+    private List<User> users;
+    ...
+</code></pre>
+					</section>
+				</section>
+				
 				<section>
 					<section>
 						<h2>Workflow</h2>
@@ -273,6 +277,7 @@ if (connection.response().statusCode() >= 200 && connection.response().statusCod
 						</ul>
 					</section>
 				</section>
+				
 				<section>
 					<section>
 						<h2>Frontend</h2>

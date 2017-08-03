@@ -35,13 +35,97 @@
 				<section>
 					<h2>Gliederung</h2>
 					<ul>
-						<li>Crawler</li>
 						<li>Kommunikation mit E-Mail-Providern</li>
+						<li>Crawler</li>
 						<li>Architektur</li>
 						<li>Workflow</li>
 						<li>Frontend</li>
 						<li>Live Demo</li>
 					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+							<li>
+								<p>
+									Ziel 1: Ermittlung der Kommunikationspartner über empfangene E-Mails
+								</p>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Abfrage der Kommunikationspartner</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Abfrage über IMAP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class ImapQuery extends MailAccessor {
+
+  public ImapQuery(String address, String password, 
+      String imapServer) {
+    ...
+  }
+
+  public Set&lt;String&gt; getSenderDomains() {
+    ...
+  }
+
+  public Set&lt;MailAddress&gt; getSenderMailAddresses() {
+    ...
+  }
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
+						<ul>
+							<li>
+								<p>
+									Ziel 1: Ermittlung der Kommunikationspartner über empfangene E-Mails
+								</p>
+							</li>
+							<li class = "fragment">
+								<p>
+									Ziel 2: Einfache Anfragen, auch bei vielen Empfängern
+								</p>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Versand der Anfragen</h2>
+						<p>
+							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
+						</p>
+					</section>
+					<section>
+						<h2>Versand über SMTP</h2>
+						<pre><code class="java vs" data-trim contenteditable>
+public class SmtpSender extends MailAccessor {
+
+  public SmtpSender(String address, String password,
+      String smtpServer) {
+    ...
+  }
+
+  public void sendMail(List&lt;String&gt; recipients,
+      String subject, String content) {
+    ...
+  }
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>JavaMail</h2>
+						<ul>
+							<li>Liefert Funktionalität für IMAP und SMTP
+							<li>Lizensiert wahlweise mit CDDL oder GPLv2</li>
+						</ul>
+					</section>
 				</section>
 				
 				<section>
@@ -50,32 +134,34 @@
 						<p>Funktion</p>
 						<p>Code Snippets</p>
 						<p>FavIcon</p>
-						<p>regulärer Ausdruck</p>
+						<p>Regulärer Ausdruck</p>
 					</section>
 					<section>
 						<h3>Wie funktioniert der Crawler?</h3>
 						<ul>
-						<li>Nach Eingabe der URL wird die ganze Seite gecrawled</li>
-						<li>Collecten alle Links auf der Seite und packen alle Links in eine Liste </li>
-						<li>Wir bleiben in der selben Domain </li>
-						<li>Suchen die ganzen Seiten auf Basis des regulären Ausdrucks nach Email-Adressen ab</li>
-						<li>Passt eine Email-Adresse zu unserer selbst erstellten Prioritäten Liste ("Impressum", "Info" etc.), wird diese Adresse in einer Liste gespeichert </li>
+						<li>Nach Eingabe der URL wird die ganze Seite durchsucht</li>
+						<li class = "fragment">Sammeln aller Links auf der Seite</li>
+						<li class = "fragment">Die Domain wird nicht verlassen</li>
+						<li class = "fragment">E-Mail-Adressen werden mithilfe von regulärem Ausdruck gesucht</li>
+						<li class = "fragment">E-Mail-Adressen und Links werden über eine Liste priorisiert</li>
 						</ul>
 					</section>
 					<section>
 						<h2>Code Snippets</h2>
-						<h3> Packen die Links in die Liste </h3>
+						<h3>Links werden in einer Liste verwaltet</h3>
 						<pre> <code data-trim data-noescape>
-if (connection.response().statusCode() >= 200 && connection.response().statusCode() < 400) {
-	Elements linksOnPage = htmlDocument.select("a[href]");
-	for (Element link : linksOnPage) {
-		links.add(removeAnchorFromLink(link.absUrl("href")));
-	}
+if (connection.response().statusCode() >= 200 
+  && connection.response().statusCode() < 400) {
+
+    Elements linksOnPage = htmlDocument.select("a[href]");
+    for (Element link : linksOnPage) {
+	links.add(removeAnchorFromLink(link.absUrl("href")));
+    }
 }
 </code></pre>
 					</section>
 					<section>
-						<h3>Anker entfernen</h3>
+						<h3>Optimierungen</h3>
 						<p>
 						<pre> <code data-trim data-noescape>
 
@@ -87,18 +173,13 @@ if (connection.response().statusCode() >= 200 && connection.response().statusCod
         }
     }
 </code></pre>
-					</section>
-					<section>
-						<h3> Filter auf gefundene Email anwenden </h3>
-						<p>
-						<pre> <code data-trim data-noescape>
-			 Optional<String> prio = mails.stream()
-                        .filter(Spider::isPrio)
-                        .filter(mail -> Spider.emailHasSameDomain(url, mail))
-                        .findAny();
+<pre> <code data-trim data-noescape>
+Optional<String> prio = mails.stream()
+	.filter(Spider::isPrio)
+	.filter(mail -> Spider.emailHasSameDomain(url, mail))
+	.findAny();
 
 </code></pre>
-						</p>
 					</section>
 					<section>
 						<h2>FavIcon</h2>
@@ -124,90 +205,6 @@ if (connection.response().statusCode() >= 200 && connection.response().statusCod
 						</p>
 						<p>
 						</p>
-					</section>
-				</section>
-				
-				<section>
-					<section>
-						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
-						<ul>
-							<li>
-								<p>
-									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
-								</p>
-							</li>
-						</ul>
-					</section>
-					<section>
-						<h2>Abfrage der Kommunikationspartner</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
-					</section>
-					<section>
-						<h2>Abfrage über IMAP</h2>
-						<pre><code class="java vs" data-trim contenteditable>
-public class ImapQuery extends MailAccessor {
-
-	public ImapQuery(String address, String password,
-		String imapServer) {
-		...
-	}
-
-	public Set&lt;String&gt; getSenderDomains() {
-		...
-	}
-
-	public Set&lt;MailAddress&gt; getSenderMailAddresses() {
-		...
-	}
-}
-						</code></pre>
-					</section>
-					<section>
-						<h2>Kommunikation mit <br />E-Mail-Providern</h2>
-						<ul>
-							<li>
-								<p>
-									Ziel 1: Ermittelung der Kommunikationspartner über empfangene Mails
-								</p>
-							</li>
-							<li class = "fragment">
-								<p>
-									Ziel 2: Einfache Datenanfrage, auch bei vielen Empfängern
-								</p>
-							</li>
-						</ul>
-					</section>
-					<section>
-						<h2>Versand der Anfragen</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
-					</section>
-					<section>
-						<h2>Versand über SMTP</h2>
-						<pre><code class="java vs" data-trim contenteditable>
-public class SmtpSender extends MailAccessor {
-
-	public SmtpSender(String address, String password,
-		String smtpServer) {
-		...
-	}
-
-	public void sendMail(List&lt;String&gt; recipients,
-		String subject, String content) {
-		...
-	}
-}
-						</code></pre>
-					</section>
-					<section>
-						<h2>JavaMail</h2>
-						<ul>
-							<li>Liefert Funktionalität für IMAP und SMTP
-							<li>JavaMail lizensiert wahlweise mit CDDL oder GPLv2</li>
-						</ul>
 					</section>
 				</section>
 				
@@ -268,7 +265,25 @@ public class Company {
     @ManyToMany(targetEntity = User.class, cascade = {CascadeType.ALL})
     private List<User> users;
     ...
+}
 </code></pre>
+					</section>
+					<section>
+					<h2>Backend-Optimierung</h2>
+					<ul>
+					<li class = "fragment">Erweiterungen</li>
+					<ul>
+						<li class = "fragment">Reminder Mails (Firmen und User)</li>
+						<li class = "fragment">Daten Löschen Endpunkt</li>
+						<li class = "fragment">Firmen Daten aktualisierungen ermöglichen</li>
+					</ul>
+					<li class = "fragment">Verbesserungen</li>
+					<ul>
+						<li class = "fragment">Refaktorisierungen</li>
+						<li class = "fragment">MVC- Tests</li>
+						<li class = "fragment">Restdocs</li>
+					</ul>
+					</ul>
 					</section>
 				</section>
 				
@@ -277,10 +292,10 @@ public class Company {
 						<h2>Workflow</h2>
 						<ul>
 							<li>Docker</li>
-							<li>Nach Push auf Github wird über Dockerhub ein neues Image erzeugt</li>
-							<li>Bereits laufende Container werden alle 5 Minuten nach Updates überprüft</li>
-							<li>Sollte ein Update verfügbar sein, wird der Container über Dockerhub geupdated</li>
-							<li>Somit dauer ein Update vom Push bis zum Release ca. 10 Minuten</li>
+							<li class = "fragment">Nach Push auf Github wird über Dockerhub ein neues Image erzeugt</li>
+							<li class = "fragment">Bereits laufende Container werden alle 5 Minuten nach Updates überprüft</li>
+							<li class = "fragment">Sollte ein Update verfügbar sein, wird der Container über Dockerhub geupdated</li>
+							<li class = "fragment">Somit dauer ein Update vom Push bis zum Release ca. 10 Minuten</li>
 						</ul>
 					</section>
 				</section>
@@ -290,10 +305,10 @@ public class Company {
 						<h2>Frontend</h2>
 						<ul>
 							<li>React Web-App (JavaScript Framework)</li>
-							<li>Möglichst einfache Nutzung</li>
-							<li>Firmen können automatisch und manuell ausgewählt werden</li>
-							<li>Firmen werden zudem durch ihr eigenes Logo visualisiert</li>
-							<li>Nutzer wird in einem vordefinierten Workflow gehalten</li>
+							<li class = "fragment">Möglichst einfache Nutzung</li>
+							<li class = "fragment">Firmen können automatisch und manuell ausgewählt werden</li>
+							<li class = "fragment">Firmen werden zudem durch ihr eigenes Logo visualisiert</li>
+							<li class = "fragment">Nutzer wird in einem vordefinierten Workflow gehalten</li>
 						</ul>
 					</section>
 					<section>
@@ -303,6 +318,7 @@ public class Company {
 				<section>
 					<h1>LIVE DEMO</h1>
 				</section>
+				<section data-background-iframe="http://annoying34.konstantindeichmann.de"></section>
 			</div>
 		</div>
 		<script src="lib/js/head.min.js"></script>

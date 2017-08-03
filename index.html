@@ -35,12 +35,24 @@
 				<section>
 					<h2>Gliederung</h2>
 					<ul>
+						<li>Übersicht</li>
 						<li>Kommunikation mit E-Mail-Providern</li>
 						<li>Crawler</li>
 						<li>Architektur</li>
 						<li>Workflow</li>
 						<li>Frontend</li>
 						<li>Live Demo</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Übersicht</h2>
+					<ul>
+						<li>Finde Kommunikationspartner über empfangene E-Mails</li>
+						<li class="fragment">Finde zu Sendern eine E-Mail-Adresse eines Ansprechpartners</li>
+						<li class="fragment">Liefere Übersicht gefundener Ansprechpartner</li>
+						<li class="fragment">Sende Anfragen über Provider oder E-Mail-Client</li>
+						<li class="fragment">Funktionalität über REST-Schnittstelle</li>
 					</ul>
 				</section>
 
@@ -54,12 +66,6 @@
 								</p>
 							</li>
 						</ul>
-					</section>
-					<section>
-						<h2>Abfrage der Kommunikationspartner</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
 					</section>
 					<section>
 						<h2>Abfrage über IMAP</h2>
@@ -95,12 +101,6 @@ public class ImapQuery extends MailAccessor {
 								</p>
 							</li>
 						</ul>
-					</section>
-					<section>
-						<h2>Versand der Anfragen</h2>
-						<p>
-							Annahme: Nutzer ist bereit Nutzername und Passwort zu verraten
-						</p>
 					</section>
 					<section>
 						<h2>Versand über SMTP</h2>
@@ -187,7 +187,8 @@ Optional<String> prio = mails.stream()
 						<pre> <code data-trim data-noescape> 
     public String relativeFavIcon() {
         try {
-            Element element = htmlDocument.head().select("link[href~=.*\\.(ico|png|svg)").first();
+            Element element = htmlDocument.head()
+                .select("link[href~=.*\\.(ico|png|svg)").first();
             return element.attr("abs:href");
 
         } catch (Exception e) {
